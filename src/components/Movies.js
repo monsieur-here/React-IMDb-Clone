@@ -32,7 +32,7 @@ function Movies() {
 
   const [movies, setMovies] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
-  const [watchList, setWatchList] = useState([])
+  const [watchList, setWatchList] = useState(JSON.parse(localStorage.getItem("imdb-clone")|| "[]"))
   const [hoveredMovie, setHoveredMovie] = useState(null)
 
   const trendingMovies = async () => {
@@ -60,24 +60,24 @@ function Movies() {
   }, [ currentPage ]
   )
 
-  const addToWatchList = (movieId) => {
+  const addToWatchList = (movie) => {
      const newList = [...watchList]
-     newList.push(movieId)
+     newList.push(movie)
+     localStorage.setItem("imdb-clone", JSON.stringify(newList))
      setWatchList(newList)
   }
 
-  const removeFromWatchList = (movieId) => {
-    const newList = watchList.filter((movie) => {
-      return movie !== movieId
+  const removeFromWatchList = (movie) => {
+    const newList = watchList.filter((mov) => {
+      return mov !== movie
     })
+    localStorage.setItem("imdb-clone", JSON.stringify(newList))
     setWatchList(newList)
  }
 
- const movieHover = (movie) => {
-  setHoveredMovie(movie.id)
-}
+//  console.log({ watchList, hoveredMovie })
 
- console.log({ watchList, hoveredMovie })
+  const watchListIds = watchList.map((movie)=> movie.id)
 
   return (
     <div>
@@ -97,12 +97,12 @@ function Movies() {
               <div 
               style={{visibility: movie.id === hoveredMovie ? "visible" : "hidden"}}
               className='text-2xl p-2 bg-gray-900 text-white absolute left-2 top-2 bg-opacity-60'>
-                { watchList.includes(movie.id) ? (
-                <div onClick={() => removeFromWatchList(movie.id)}>
+                { watchListIds.includes(movie) ? (
+                <div onClick={() => removeFromWatchList(movie)}>
                     <div> - </div>
                 </div> 
                 ) :
-                <div onClick={() => addToWatchList(movie.id)}>
+                <div onClick={() => addToWatchList(movie)}>
                   <div> 🧡 </div>
                 </div>
                 }
