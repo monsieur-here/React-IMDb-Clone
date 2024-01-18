@@ -97,7 +97,7 @@ function Movies() {
               <div 
               style={{visibility: movie.id === hoveredMovie ? "visible" : "hidden"}}
               className='text-2xl p-2 bg-gray-900 text-white absolute left-2 top-2 bg-opacity-60'>
-                { watchListIds.includes(movie) ? (
+                { watchListIds.includes(movie.id) ? (
                 <div onClick={() => removeFromWatchList(movie)}>
                     <div> - </div>
                 </div> 
