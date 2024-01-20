@@ -80,8 +80,8 @@ function Movies() {
   const watchListIds = watchList.map((movie)=> movie.id)
 
   return (
-    <div>
-      <div className='text-2xl mt-4 mb-8 font-bold text-center'>
+    <div className='bg-gray-800'>
+      <div className='text-2xl text-white mt-4 mb-8 font-bold text-center'>
         Trending Movies
       </div>
       <div className='flex justify-center flex-wrap'>

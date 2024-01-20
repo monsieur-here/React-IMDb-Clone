@@ -97,7 +97,7 @@ function WatchList() {
       // Since JSX can handle only one div in a return statement -- To counter that
       // we use Fragment to handle multiple divs
       <>
-        <div className="mt-6 flex space-x-2 justify-center">
+        <div className="mt-6 flex flex-wrap space-x-2 justify-center">
           {/* Buttons for genres */}
           {Array.from(genreNameSet).map((name) => (
             <button key={name} onClick={() => setSelectedGenre(name)} 
@@ -115,9 +115,9 @@ function WatchList() {
             Reset
           </button>
 
-          <div className="text-center relative">
+          <div className="flex flex-wrap text-center border-emerald-300 border-double rounded-2xl relative">
             <input type="text" placeholder="Search for Movies" 
-            className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            className="flex flex-wrap justify-center"
             value={searchStr} onChange={(e) => setSearchStr(e.target.value)}/>
           </div>
 
