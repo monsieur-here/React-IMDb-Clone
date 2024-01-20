@@ -50,11 +50,11 @@ function WatchList() {
     //     ]
 
     const [watchList, setWatchList] = useState(JSON.parse(localStorage.getItem("imdb-clone")|| "[]"))
-    const genreNames = new Set(watchList.map((id) => genreIds[id.genre_ids[0]]))
+    // const genreNames = new Set(watchList.map((id) => genreIds[id.genre_ids[0]]))
     const [selectedGenre, setSelectedGenre] = useState(null)
     const [searchStr, setSearchStr] = useState("")
     const [sortState, setSortState] = useState(0)
-    console.log({genreNames})
+    // console.log({genreNames})
 
     // Need to filter out movies by selected genre
     const watchListFiltered = watchList.filter((item) => {
@@ -84,77 +84,87 @@ function WatchList() {
         return objA.vote_average - objB.vote_average
       })
     }
+    // Displaying all the genres of a film as buttons
+    const reducedGenre = watchList.reduce((acc,elem) => {
+        console.log({elem, genre: elem.genreIds})
+        acc.push(...elem.genre_ids)
+        return acc
+    }, [])
 
-  return (
-    // Since JSX can handle only one div in a return statement -- To counter that
-    // we use Fragment to handle multiple divs
-    <>
-      <div className="mt-6 flex space-x-2 justify-center">
-        {/* Buttons for genres */}
-        {Array.from(genreNames).map((name) => (
-          <button key={name} onClick={() => setSelectedGenre(name)} 
-          className= {selectedGenre === name ? "m-2 text-lg p-1 px-2 bg-gray-400 text-white rounded-xl font-bold" 
-                                            : "m-2 text-lg p-1 px-2 bg-gray-400 hover:bg-blue-400 text-white rounded-xl font-bold"
-                     }>
-            {name}
+    const genreNameSet = new Set(reducedGenre.map((id) => genreIds[id]))
+
+    return (
+      // Since JSX can handle only one div in a return statement -- To counter that
+      // we use Fragment to handle multiple divs
+      <>
+        <div className="mt-6 flex space-x-2 justify-center">
+          {/* Buttons for genres */}
+          {Array.from(genreNameSet).map((name) => (
+            <button key={name} onClick={() => setSelectedGenre(name)} 
+            className= {selectedGenre === name ? "m-2 text-lg p-1 px-2 bg-gray-400 text-white rounded-xl font-bold" 
+                                              : "m-2 text-lg p-1 px-2 bg-gray-400 hover:bg-blue-400 text-white rounded-xl font-bold"
+                      }>
+              {name}
+            </button>
+          ))}
+
+          
+          <button key="reset" 
+          onClick={() => {setSelectedGenre(null)}}
+          className="m-2 text-lg p-1 px-2 bg-red-400 text-white rounded-xl font-bold">
+            Reset
           </button>
-        ))}
-        <button key="reset" 
-        onClick={() => {setSelectedGenre(null)}}
-        className="m-2 text-lg p-1 px-2 bg-red-400 text-white rounded-xl font-bold">
-          Reset
-        </button>
 
-        <div className="text-center relative">
-          <input type="text" placeholder="Search for Movies" 
-          className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          value={searchStr} onChange={(e) => setSearchStr(e.target.value)}/>
+          <div className="text-center relative">
+            <input type="text" placeholder="Search for Movies" 
+            className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            value={searchStr} onChange={(e) => setSearchStr(e.target.value)}/>
+          </div>
+
         </div>
-
-      </div>
-      <div className='rounded lg-border border-gray-200 m-5 shadow-md'>
-        <table className='w-full bg-white text-sm text-gray-500'>
-          <thead className='bg-gray-50'>
-              <tr>
-                  <th>Name</th>
-                  <th>Image</th>
-                  <th>
-                    <div className="flex space-x-2">
-                      <img src="https://img.icons8.com/external-those-icons-lineal-those-icons/24/000000/external-up-arrows-those-icons-lineal-those-icons-3.png" 
-                           className="mr-1 w-[20px]" onClick={() => setSortState(1)}/>
-                      Ratings
-                      <img src="https://img.icons8.com/external-those-icons-lineal-those-icons/24/000000/external-down-arrows-those-icons-lineal-those-icons-4.png" 
-                           className="mr-1 w-[20px]" onClick={()=>setSortState(-1)}/>
-                    </div>
-                  </th>
-                  <th>Popularity</th>
-                  <th>Genre</th>
-              </tr>
-          </thead>
-          <tbody className='border text-center'>
-              {watchListFilteredAndSearchedAndSorted.map((watchListItem) => (
-                  <tr key={watchListItem.id} className='hover:bg-gray-50'>
-                      <td>{watchListItem.original_title}</td>
-                      <td>
-                        <div className='flex justify-center items-center'>
-                          <div className='h-60 w-60 bg-cover'
-                          style={{backgroundImage: `url(https://image.tmdb.org/t/p/w500/${watchListItem.poster_path})`}}>
-                          </div>
-                          </div>
-                      </td>
-                      <td>{watchListItem.vote_average}</td>
-                      <td>{watchListItem.popularity}</td>
-                      <td>{watchListItem.genre_ids.map((id) => genreIds[id]).join(",")}</td>
-                      <td className='text-red-600'>
-                          Delete
-                      </td>
-                  </tr>
-              ))}
-          </tbody>
-        </table>
-      </div>
-    </>
-  )
+        <div className='rounded lg-border border-gray-200 m-5 shadow-md'>
+          <table className='w-full bg-white text-sm text-gray-500'>
+            <thead className='bg-gray-50'>
+                <tr>
+                    <th>Name</th>
+                    <th>Image</th>
+                    <th>
+                      <div className="flex space-x-2">
+                        <img src="https://img.icons8.com/external-those-icons-lineal-those-icons/24/000000/external-up-arrows-those-icons-lineal-those-icons-3.png" 
+                            className="mr-1 w-[20px]" onClick={() => setSortState(1)}/>
+                        Ratings
+                        <img src="https://img.icons8.com/external-those-icons-lineal-those-icons/24/000000/external-down-arrows-those-icons-lineal-those-icons-4.png" 
+                            className="mr-1 w-[20px]" onClick={()=>setSortState(-1)}/>
+                      </div>
+                    </th>
+                    <th>Popularity</th>
+                    <th>Genre</th>
+                </tr>
+            </thead>
+            <tbody className='border text-center'>
+                {watchListFilteredAndSearchedAndSorted.map((watchListItem) => (
+                    <tr key={watchListItem.id} className='hover:bg-gray-50'>
+                        <td>{watchListItem.original_title}</td>
+                        <td>
+                          <div className='flex justify-center items-center'>
+                            <div className='h-60 w-60 bg-cover'
+                            style={{backgroundImage: `url(https://image.tmdb.org/t/p/w500/${watchListItem.poster_path})`}}>
+                            </div>
+                            </div>
+                        </td>
+                        <td>{watchListItem.vote_average}</td>
+                        <td>{watchListItem.popularity}</td>
+                        <td>{watchListItem.genre_ids.map((id) => genreIds[id]).join(",")}</td>
+                        <td className='text-red-600'>
+                            Delete
+                        </td>
+                    </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
+      </>
+    )
 }
 
 export default WatchList
